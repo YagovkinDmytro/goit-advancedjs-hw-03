@@ -18,12 +18,9 @@ elements.select.style.display = 'none';
 elements.messageError.style.display = 'none';
 elements.catInfo.style.display = 'none';
 
-loading();
-
 function loading() {
   fetchBreeds()
     .then(data => {
-      console.log(data);
       elements.messageLoader.style.display = 'block';
       makeOption(data);
       elements.messageLoader.style.display = 'none';
@@ -36,6 +33,15 @@ function loading() {
       )
     );
 }
+loading();
+
+function setDefault() {
+  return elements.select.insertAdjacentHTML(
+    'beforeend',
+    '<option value="">Choose a breed</option>'
+  );
+}
+setDefault();
 
 function makeOption(data) {
   const option = data
@@ -61,8 +67,20 @@ function setBreed(event) {
     );
 }
 
-function renderInfo(data) {
+function renderInfo(arr) {
   elements.messageLoader.style.display = 'none';
   elements.catInfo.style.display = 'block';
-  console.log(data);
+
+  const card = arr
+    .map(({ url, breeds }) => {
+      return breeds.map(
+        ({ name, description, temperament }) =>
+          `<img src="${url}" alt="${name}" />
+      <h2>${name}</h2>
+      <p>${description}</p>
+      <p>Temperament: ${temperament}</p>`
+      );
+    })
+    .join('');
+  elements.catInfo.innerHTML = card;
 }
