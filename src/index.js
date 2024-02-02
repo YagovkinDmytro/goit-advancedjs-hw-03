@@ -1,9 +1,9 @@
-import axios from 'axios';
 import { fetchBreeds } from './cat-api';
 import { fetchCatByBreed } from './cat-api';
 import iziToast from 'izitoast';
 import 'izitoast/dist/css/iziToast.min.css';
 
+// import axios from 'axios';
 // axios.defaults.headers.common['x-api-key'] = 'live_JBV67LISgv2ukmTbv0ljH9XRgowj3QdbFJmCIkpvj5kTitSzayNI1LDTecM7YPf7';
 
 const elements = {
