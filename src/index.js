@@ -1,9 +1,10 @@
 import axios from 'axios';
 import { fetchBreeds } from './cat-api';
 import { fetchCatByBreed } from './cat-api';
+import iziToast from 'izitoast';
+import 'izitoast/dist/css/iziToast.min.css';
 
-// axios.defaults.headers.common['x-api-key'] =
-//   'live_JBV67LISgv2ukmTbv0ljH9XRgowj3QdbFJmCIkpvj5kTitSzayNI1LDTecM7YPf7';
+// axios.defaults.headers.common['x-api-key'] = 'live_JBV67LISgv2ukmTbv0ljH9XRgowj3QdbFJmCIkpvj5kTitSzayNI1LDTecM7YPf7';
 
 const elements = {
   select: document.querySelector('.breed-select'),
@@ -28,7 +29,11 @@ function loading() {
     })
     .catch(
       err => (
-        (elements.messageError.style.display = 'block'),
+        iziToast.error({
+          title: 'Error:',
+          message: `${elements.messageError.textContent}`,
+          position: 'topRight',
+        }),
         (elements.messageLoader.style.display = 'none')
       )
     );
@@ -53,32 +58,39 @@ function makeOption(data) {
 }
 
 function setBreed(event) {
+  elements.catInfo.style.display = 'none';
   const selectedOptionValue = event.currentTarget.value;
   fetchCatByBreed(selectedOptionValue)
     .then(data => {
       elements.messageLoader.style.display = 'block';
-      renderInfo(data);
+      setTimeout(() => {
+        renderInfo(data);
+        elements.messageLoader.style.display = 'none';
+      }, 500);
     })
     .catch(
       err => (
-        (elements.messageError.style.display = 'block'),
+        iziToast.error({
+          title: 'Error:',
+          message: `${elements.messageError.textContent}`,
+          position: 'topRight',
+        }),
         (elements.messageLoader.style.display = 'none')
       )
     );
 }
 
 function renderInfo(arr) {
-  elements.messageLoader.style.display = 'none';
-  elements.catInfo.style.display = 'block';
+  elements.catInfo.style.display = 'flex';
 
   const card = arr
     .map(({ url, breeds }) => {
       return breeds.map(
         ({ name, description, temperament }) =>
-          `<img src="${url}" alt="${name}" />
-      <h2>${name}</h2>
+          `<img src="${url}" alt="${name}" width="600"/>
+      <div class ="cat-info-text"><h2>${name}</h2>
       <p>${description}</p>
-      <p>Temperament: ${temperament}</p>`
+      <p><span>Temperament:</span> ${temperament}</p></div>`
       );
     })
     .join('');
